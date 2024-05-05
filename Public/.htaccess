@@ -1,0 +1,57 @@
+# En este archivo podemos cargar o agregar las directivas y/o configuraciones sobre las cuales 
+# nuestro servidor web (Apache) debe ejecutarse.
+# Options -All Indexes : Con esto buscamos activar todas las opciones excepto los indices (Indexes) lo cual indica que
+# se habilitaran todas las opciones de configuracion, excepto la visualizacion de la lsta de directorios cuando no 
+# haya algun archivo como index.html, index.php u algun otro archivo partida.
+
+Options All -Indexes
+
+# RewriteEngine on: Esta directiva activa el modulo de reescritura (mod_rewrite) de apache, el cual nos permite manipular
+# las URL'S antes de que el servidor las procese.
+ RewriteEngine on
+
+#------Script Injection-----------#
+# RewriteCond: Nos permite agregar condiciones al momento de reescribir, en este caso buscamos evitar 
+# ataques de script injection y username numeration.
+# https://www.bugbountyhunter.com/hackevents/report?id=873
+# https://www.ubikasec.com/en/posts/how-to-effectively-protect-yourself-from-script-injection-attacks/
+RewriteCond %{QUERY_STRING} (\<|%3E).*script*.(\>|%3E) [NC,OR]
+# Valida en si en la url esta la variable global $GLOBALS -> https://www.php.net/manual/en/reserved.variables.globals.php
+RewriteCond %{QUERY_STRING} GLOBALS(=|\%[0-9A-Z]{0,2}) [OR]
+# Valida en si en la url esta la variable global $_REQUEST -> https://www.php.net/manual/en/reserved.variables.request.php
+RewriteCond %{QUERY_STRING} _REQUEST(=|\%[0-9A-Z]{0,2})
+# Si se cumplen las condiciones reescribimos o enviamos las solicitudes a index.php, denegando a su vez el acceso
+# ([F]) y de cumplirse se aplicara la ultima regla ([L])
+RewriteRule ^(.*)$ index.php [F,L]
+
+#------------Username numeration------------#
+RewriteCond %{REQUEST_URI} !^/wp-admin [NC]
+RewriteCond %{QUERY_STRING} author=\d
+RewriteRule .* - [R=403,L]
+
+# Indicamos que no se acepten directorios o archivos en la url
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Apache nos permite filtrar las solicitudes http mediante expresiones regulares.
+# (.) coincide con cualquier carácter.
+# (*) coincide con cero o más repeticiones del carácter anterior.
+# (+) coincide con una o más repeticiones del carácter anterior.
+# ([ ]) indican un conjunto de caracteres que pueden coincidir con un único carácter en la cadena de texto.
+# (?) indica que el carácter anterior es opcional y puede aparecer cero o una vez.
+# ($) coincide con el final de una cadena de texto.
+# Por ejemplo, si deseas buscar todas las solicitudes de HTTP que comienzan con "https" en el registro de acceso de Apache,
+# puedes usar la expresión regular "^https". Aquí, "^" indica el inicio de la cadena de texto, 
+# y "https" es el patrón que deseas buscar.
+
+# Otro ejemplo sería si deseas buscar todas las solicitudes de HTTP que contienen la palabra "admin" en 
+# la URL, puedes usar la expresión regular "/admin/". Aquí, las barras diagonales indican que "admin" 
+# es un patrón a buscar en cualquier lugar dentro de la URL.
+
+# En este caso le indicamos que las peticiones que nos lleguen se la envie al archivo index.php 
+# mediante QSA (Con esto nos aseguramos que los parametos ?value=1 se envien juanto con la url) con el parametro de
+# la url para que este la interprete, si la regla se cumple no se ejecuta nada mas por debajo de esta.
+# Ejemp. /Comidas/ArrozPaisa.php?Cant=1&Porciones=2 ==> index.php?url=Comidas&ArrozPaisa&Cant=1&Porciones=2
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+

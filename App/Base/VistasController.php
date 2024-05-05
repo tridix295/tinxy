@@ -28,6 +28,7 @@ class Vistas{
 
         //Incluimos la estructura de la interfaz {header}{vista}{footer}
         include_once Path_App . "/Vistas/Partials/header.php";
+        include_once Path_App ."/Vistas/Partials/flash.php";
         include_once($path);
         include_once Path_App . "/Vistas/Partials/footer.php";
     }

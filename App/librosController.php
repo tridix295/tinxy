@@ -1,6 +1,6 @@
 <?php
 use App\Base\Base;
-
+use App\Base\Auth;
 class libros extends Base
 {
     private $datos;
@@ -8,7 +8,11 @@ class libros extends Base
     public function __construct()
     {
         parent::__construct();
+        Auth::isLoged();
     }
+    /**
+    * Método para registrar un nuevo libro.
+    */
     public function registrar()
     {
         // Verificamos si se recibieron los datos del formulario mediante POST
@@ -37,13 +41,26 @@ class libros extends Base
             }
     }
 
+    /**
+    * Método para buscar un libro por su ID.
+    *
+    * @param int $id El ID del libro a buscar.
+    */
     public function buscar(int $id)
     {
-        $joins = [['tabla' => 'autores', 'alias' => 'A', 'condicion' => 'A.id_autor = T.id_autor', 'tipo' => 'INNER'],
-                    ['tabla' => 'generos', 'alias' => 'G', 'condicion' => 'G.id_genero = T.id_genero', 'tipo' => 'INNER']];
+        // Definir los joins necesarios para obtener información adicional del libro.
+        $joins = [
+            ['tabla' => 'autores', 'alias' => 'A', 'condicion' => 'A.id_autor = T.id_autor', 'tipo' => 'INNER'],
+            ['tabla' => 'generos', 'alias' => 'G', 'condicion' => 'G.id_genero = T.id_genero', 'tipo' => 'INNER']
+        ];
+
+        // Aplicar los joins al modelo.
         $this->modelo->generarJoins($joins);
+
+        // Extraer los datos del libro con el ID proporcionado.
         $datos = $this->modelo->extraer('libros as T', '*', "T.tiid = $id");
 
+        // Devolver los datos en formato JSON.
         echo json_encode($datos);
     }
     public function generos()
@@ -206,4 +223,3 @@ class libros extends Base
     }
 
 }
-?>

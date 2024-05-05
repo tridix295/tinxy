@@ -35,7 +35,7 @@
             </tr>
             <?php endforeach; else:?>
                 <tr><h3>No se han encontrado registros</h3></tr>
-        <?php endif;?>
+            <?php endif;?>
             
         </tbody>
     </table>

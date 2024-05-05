@@ -15,10 +15,10 @@
         <span class="fs-4">TINXY</span>
       </a>
 
-      <ul class="nav nav-pills">
-        <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Inicio</a></li>
-        <li class="nav-item"><a href="/inicio/admin" class="nav-link">Administrar</a></li>
-      </ul>
+      <?php
+      use Helpers\Helpers;
+      Helpers::show_header();
+      ?>
       <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="POST" action="/libros/consultar" id='buscador'>
           <input type="search" class="form-control" placeholder="Buscar..." aria-label="Search" name="busqueda">
         </form>

@@ -1,12 +1,13 @@
 <?php
 
 use App\Base\Base;
-
+use App\Base\Auth;
 class inicio extends Base{
 
     public function __construct(){
         //Instanciamos el controlador base, el cual se encarga de invocar el modelo y la vista.
         parent::__construct();
+        Auth::isLoged();
     }
 
     /**

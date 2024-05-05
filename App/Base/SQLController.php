@@ -13,7 +13,7 @@ class SQL extends Connexion_BD{
     /**
      * @var string $strquery Consulta SQL a ejecutar.
      */
-    private $strquery;
+    private  $strquery;
 
     /**
      * @var array $arrvalues Array de valores para la consulta preparada.
@@ -186,13 +186,12 @@ class SQL extends Connexion_BD{
      * @param string $query Consulta SQL.
      * @return bool True si la eliminación fue exitosa, false en caso contrario.
      */
-    public function Delete(string $query):bool|\PDOStatement{
+    public function Delete(string $query){
 
         $this->strquery = $query;
         $result = $this->conexion->prepare($this->strquery);
-        $result->execute();
-        $this->CerrarConexion();
-        return $result;
+
+        return $result->execute();
     }
 }
 
