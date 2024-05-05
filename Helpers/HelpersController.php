@@ -1,7 +1,10 @@
 <?php
 namespace Helpers;
 
+use Helpers\sessionClient;
 class Helpers{
+
+    use sessionClient;
 
     /**
      * Funcion para divir una url en sus diferentes componentes, para esto como regla definimos que el primer elemento
@@ -41,6 +44,38 @@ class Helpers{
         ];
         return $request;
     }
+    public static function getCsrf()
+    {
+        return bin2hex(random_bytes(32));
+    }
+    public static function setFlashMessage ($key, $mensaje) {
+        self::getInstance();
+        self::setSession(["flash_Message" => [
+                $key => $mensaje
+        ]]);
+    }
 
+    public static function getFlashMessage () {
+        $mensaje = self::getElementSession("flash_Message");
+    
+        // Elimina el mensaje flash después de leerlo
+        self::destroySession(["flash_Message"]);
+        return $mensaje;
+    }
+
+    public static function show_header(){
+        self::getInstance();
+        $usuario['UsId'] = self::getElementSession("UsId");
+        $usuario["UsTipoUsuario"] = self::getElementSession("UsTipoUsuario");
+        $usuario["UsNombre"] = self::getElementSession("UsNombre");
+
+        if(!empty($usuario['UsId'])){
+            include Path_App . "/Vistas/Partials/fields_admin.php";
+        }else{
+            echo '<ul class="nav nav-pills">
+                <li class="nav-item"><a href="/login" class="nav-link" aria-current="page">Iniciar sesion</a></li>
+                <li class="nav-item"><a href="/registro" class="nav-link" aria-current="page">Registrate</a></li>
+                </ul>';
+        }
+    }
 }
-?>

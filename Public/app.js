@@ -171,8 +171,34 @@ function eliminar(id) {
     }
 }
 
-
-
+function eliminarGeneros(id) {
+    if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+        // Realizar la solicitud al servidor
+        fetch(`${URL}/generos/eliminarGenero`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(response => {
+            console.log(response.json);
+            if (response.ok) {
+                // La solicitud se completó exitosamente (status 200)
+                alert("Registro eliminado correctamente");
+                location.reload();
+            } else {
+                // La solicitud falló
+                alert("Hubo un problema al eliminar el registro");
+            }
+        })
+        .catch(error => {
+            // Manejo de errores de red o del servidor
+            console.error('Error al eliminar el registro:', error);
+            alert("Hubo un error al procesar la solicitud");
+        });
+    }
+}
 
 /**
 * La función mostrarRegistros muestra un subconjunto de datos en una página web en formato de tabla con

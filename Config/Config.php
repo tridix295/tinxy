@@ -13,6 +13,8 @@ define('Path_App','c:/biblioteca');
 */
 define ('URL','http://biblioteca/');
 
+//Clave secreta para manejar y administrar las claves.
+define ('pass_secret','tinxy.2024');
 /**
 * Datos con los cuales accedemos a la base de datos
 * string DBNombre Nombre de la base de datos
